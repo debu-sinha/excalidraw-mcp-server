@@ -1,0 +1,23 @@
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    required:
+      - apiKey
+    properties:
+      apiKey:
+        type: string
+        description: "API key for authenticating with the canvas server (min 32 chars)"
+      canvasServerUrl:
+        type: string
+        default: "http://127.0.0.1:3000"
+        description: "URL of the canvas server"
+  commandFunction: |-
+    config => ({
+      command: 'node',
+      args: ['dist/mcp/index.js'],
+      env: {
+        EXCALIDRAW_API_KEY: config.apiKey,
+        CANVAS_SERVER_URL: config.canvasServerUrl || 'http://127.0.0.1:3000'
+      }
+    })

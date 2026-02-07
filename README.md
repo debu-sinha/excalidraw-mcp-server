@@ -3,6 +3,7 @@
 Security-hardened MCP server for Excalidraw with API key auth, rate limiting, and real-time canvas sync.
 
 [![CI](https://github.com/debu-sinha/excalidraw-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/debu-sinha/excalidraw-mcp-server/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/excalidraw-mcp-server)](https://www.npmjs.com/package/excalidraw-mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org/)
 
@@ -24,20 +25,33 @@ Existing Excalidraw MCP servers ship with no authentication, wildcard CORS, no r
 - **Structured logging** -- pino-based audit trail for all operations
 - **Mermaid support** -- convert Mermaid diagrams to Excalidraw elements
 
+## Install
+
+```bash
+npm install -g excalidraw-mcp-server
+```
+
+Or run directly with npx:
+
+```bash
+npx excalidraw-mcp-server
+```
+
 ## Quick start
 
 ```bash
-# Clone and install
+# Option 1: Install from npm
+npm install -g excalidraw-mcp-server
+
+# Option 2: Clone and build from source
 git clone https://github.com/debu-sinha/excalidraw-mcp-server.git
 cd excalidraw-mcp-server
 npm ci
+npm run build
 
 # Generate an API key
 node scripts/generate-api-key.cjs
 # Copy the output -- you will need it below
-
-# Build the project
-npm run build
 
 # Start the canvas server (in one terminal)
 EXCALIDRAW_API_KEY=<your-key> npm run canvas
@@ -121,8 +135,8 @@ Add to `claude_desktop_config.json`:
 {
   "mcpServers": {
     "excalidraw": {
-      "command": "node",
-      "args": ["<path-to>/excalidraw-mcp-server/dist/mcp/index.js"],
+      "command": "npx",
+      "args": ["excalidraw-mcp-server"],
       "env": {
         "EXCALIDRAW_API_KEY": "<your-api-key>",
         "CANVAS_SERVER_URL": "http://127.0.0.1:3000"
@@ -140,8 +154,8 @@ Add to `.cursor/mcp.json` in your project root:
 {
   "mcpServers": {
     "excalidraw": {
-      "command": "node",
-      "args": ["<path-to>/excalidraw-mcp-server/dist/mcp/index.js"],
+      "command": "npx",
+      "args": ["excalidraw-mcp-server"],
       "env": {
         "EXCALIDRAW_API_KEY": "<your-api-key>",
         "CANVAS_SERVER_URL": "http://127.0.0.1:3000"
@@ -159,8 +173,8 @@ Add to your Codex MCP configuration:
 {
   "mcpServers": {
     "excalidraw": {
-      "command": "node",
-      "args": ["<path-to>/excalidraw-mcp-server/dist/mcp/index.js"],
+      "command": "npx",
+      "args": ["excalidraw-mcp-server"],
       "env": {
         "EXCALIDRAW_API_KEY": "<your-api-key>",
         "CANVAS_SERVER_URL": "http://127.0.0.1:3000"
@@ -170,7 +184,7 @@ Add to your Codex MCP configuration:
 }
 ```
 
-Replace `<path-to>` with the absolute path to your cloned repository and `<your-api-key>` with the key generated earlier.
+Replace `<your-api-key>` with the key generated earlier. If you prefer to run from a local clone instead of npx, replace the command with `"node"` and args with `["<path-to>/excalidraw-mcp-server/dist/mcp/index.js"]`.
 
 ## Development
 
