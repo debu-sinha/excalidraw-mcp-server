@@ -1,0 +1,26 @@
+services:
+  canvas:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - EXCALIDRAW_API_KEY=${EXCALIDRAW_API_KEY:?Set EXCALIDRAW_API_KEY in .env}
+      - CANVAS_HOST=0.0.0.0
+      - CANVAS_PORT=3000
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000
+      - PERSISTENCE_ENABLED=true
+      - PERSISTENCE_DIR=/app/data
+      - LOG_LEVEL=info
+    volumes:
+      - canvas-data:/app/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+volumes:
+  canvas-data:
