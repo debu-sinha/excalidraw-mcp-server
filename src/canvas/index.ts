@@ -55,16 +55,16 @@ async function main(): Promise<void> {
   // 5. Audit logging
   app.use(createAuditLogger(config));
 
-  // 6. Authentication
-  app.use(createAuthMiddleware(config));
-
-  // 7. Health check route (bypasses auth via middleware)
+  // 6. Health check route (no auth required)
   app.use(createHealthRouter());
 
-  // 8. Serve frontend static files
+  // 7. Serve frontend static files (no auth - frontend handles its own auth for WS/API)
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
   const frontendDir = path.resolve(__dirname, 'frontend');
   app.use(express.static(frontendDir));
+
+  // 8. Authentication (only applies to /api/* routes below)
+  app.use('/api', createAuthMiddleware(config));
 
   // Create HTTP server for both Express and WebSocket
   const server = http.createServer(app);

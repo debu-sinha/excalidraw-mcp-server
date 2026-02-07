@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   root: 'frontend',
   build: {
-    outDir: '../dist/frontend',
+    outDir: '../dist/canvas/frontend',
     emptyOutDir: true,
   },
   server: {
