@@ -15,10 +15,10 @@ Thanks for your interest in contributing to excalidraw-mcp-server.
    npm run type-check
    npm test
    ```
-7. Commit using [Conventional Commits](https://www.conventionalcommits.org/):
+7. Commit with a clear, descriptive message:
    ```
-   feat: add new tool for frame elements
-   fix: correct alignment calculation for rotated elements
+   Add new tool for frame elements
+   Fix alignment calculation for rotated elements
    ```
 8. Push and open a pull request against `main`
 
