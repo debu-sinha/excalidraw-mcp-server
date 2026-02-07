@@ -63,15 +63,11 @@ Open `http://localhost:3000` in a browser to see the Excalidraw canvas. The fron
 
 ## Architecture
 
-```mermaid
-graph LR
-    A[MCP Client<br>Claude Desktop / Cursor / Codex] -->|stdio| B[MCP Server<br>Node.js]
-    B -->|HTTP + API Key| C[Canvas Server<br>Express]
-    C -->|WebSocket + Token| D[Browser Frontend<br>Excalidraw]
-    C --- E[Element Store<br>Memory or File]
-```
+<p align="center">
+  <img src="docs/architecture.svg" alt="Architecture diagram showing MCP Client, MCP Server, Canvas Server, Browser Frontend, and Element Store with security layers" width="920" />
+</p>
 
-The MCP server communicates with clients over stdio (standard MCP transport). It forwards tool calls to the canvas server over authenticated HTTP. The canvas server manages element state and broadcasts changes to connected browser clients over authenticated WebSocket.
+The MCP server communicates with clients over stdio (standard MCP transport). It forwards tool calls to the canvas server over authenticated HTTP. The canvas server manages element state and broadcasts changes to connected browser clients over authenticated WebSocket. Every hop is authenticated and rate-limited.
 
 ## Security comparison
 
