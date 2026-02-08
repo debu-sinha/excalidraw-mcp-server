@@ -66,6 +66,17 @@ const configSchema = z.object({
     .int()
     .positive()
     .default(100),
+
+  STANDALONE_MODE: z
+    .coerce.boolean()
+    .default(true),
+
+  STREAMABLE_HTTP_PORT: z
+    .coerce.number()
+    .int()
+    .min(1)
+    .max(65535)
+    .optional(),
 });
 
 export type Config = z.infer<typeof configSchema>;

@@ -3,9 +3,15 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { loadConfig } from '../shared/config.js';
 import { createLogger } from '../shared/logger.js';
 import { CanvasClient } from './canvas-client.js';
+import { StandaloneStore } from './apps/standalone-store.js';
+import { CanvasClientAdapter } from './apps/canvas-client-adapter.js';
+import { registerMcpApps } from './apps/register.js';
 import { LIMITS } from './schemas/limits.js';
 
 const logger = createLogger('mcp');
@@ -15,13 +21,54 @@ const ELEMENT_TYPES = [
   'text', 'line', 'freedraw',
 ] as const;
 
+async function detectMode(config: ReturnType<typeof loadConfig>): Promise<'standalone' | 'connected'> {
+  if (!config.STANDALONE_MODE) return 'connected';
+
+  // Try to reach the canvas server
+  const canvasClient = new CanvasClient(config);
+  const reachable = await canvasClient.healthCheck();
+  if (reachable) {
+    logger.info('Canvas server reachable, running in connected mode');
+    return 'connected';
+  }
+  logger.info('Canvas server not reachable, running in standalone mode');
+  return 'standalone';
+}
+
 async function main(): Promise<void> {
   const config = loadConfig();
-  const client = new CanvasClient(config);
+  const mode = await detectMode(config);
+
+  // Create the right client based on mode
+  let client: CanvasClient | CanvasClientAdapter;
+  let standaloneStore: StandaloneStore | null = null;
+
+  if (mode === 'connected') {
+    client = new CanvasClient(config);
+  } else {
+    standaloneStore = new StandaloneStore(config.MAX_ELEMENTS);
+    client = new CanvasClientAdapter(standaloneStore);
+  }
 
   const server = new McpServer({
     name: 'excalidraw-mcp-server',
-    version: '1.0.0',
+    version: '2.0.0',
+  });
+
+  // Register MCP Apps tools (create_view, read_me) and widget resource
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  registerMcpApps(server, {
+    getWidgetHtml: async () => {
+      const widgetPath = path.resolve(__dirname, '../widget/index.html');
+      try {
+        return await fs.promises.readFile(widgetPath, 'utf-8');
+      } catch {
+        return '<html><body><p>Widget not built. Run npm run build:widget</p></body></html>';
+      }
+    },
+    persistToStore: async (elements) => {
+      await client.batchCreate(elements);
+    },
   });
 
   // Shared schema fragments
@@ -468,7 +515,7 @@ async function main(): Promise<void> {
   // Connect via stdio
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  logger.info('MCP server connected via stdio');
+  logger.info({ mode, tools: 16 }, 'MCP server connected via stdio');
 }
 
 main().catch(err => {
@@ -481,7 +528,7 @@ main().catch(err => {
 export function createSandboxServer(): McpServer {
   const server = new McpServer({
     name: 'excalidraw-mcp-server',
-    version: '1.0.2',
+    version: '2.0.0',
   });
 
   const CoordZ = z.number().min(LIMITS.MIN_COORDINATE).max(LIMITS.MAX_COORDINATE).finite();
@@ -524,6 +571,8 @@ export function createSandboxServer(): McpServer {
   server.tool('unlock_elements', 'Unlock elements to allow modification', { elementIds: IdsZ }, noop);
   server.tool('create_from_mermaid', 'Convert a Mermaid diagram to Excalidraw elements', { mermaidDiagram: z.string().min(1).max(LIMITS.MAX_MERMAID_LENGTH) }, noop);
   server.tool('export_scene', 'Export the canvas as PNG or SVG', { format: z.enum(['png', 'svg']), elementIds: z.array(IdZ).max(LIMITS.MAX_ELEMENT_IDS).optional(), background: ColorZ, padding: z.number().min(0).max(500).finite().optional() }, noop);
+  server.tool('create_view', 'Render Excalidraw elements as an interactive inline diagram', { elements: z.array(z.object(elementFields)).min(1).max(LIMITS.MAX_BATCH_SIZE), title: z.string().max(200).optional(), background: ColorZ }, noop);
+  server.tool('read_me', 'Get the Excalidraw element reference: types, colors, sizing, and tips', {}, noop);
 
   return server;
 }
