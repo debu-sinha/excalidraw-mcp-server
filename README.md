@@ -4,7 +4,7 @@ Security-hardened MCP server for Excalidraw with API key auth, rate limiting, an
 
 [![CI](https://github.com/debu-sinha/excalidraw-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/debu-sinha/excalidraw-mcp-server/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/excalidraw-mcp-server)](https://www.npmjs.com/package/excalidraw-mcp-server)
-[![npm downloads](https://img.shields.io/npm/dm/excalidraw-mcp-server)](https://www.npmjs.com/package/excalidraw-mcp-server)
+[![npm downloads](https://img.shields.io/npm/dt/excalidraw-mcp-server)](https://www.npmjs.com/package/excalidraw-mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org/)
 
