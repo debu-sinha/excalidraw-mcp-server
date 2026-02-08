@@ -476,3 +476,54 @@ main().catch(err => {
   logger2.fatal({ err }, 'MCP server failed to start');
   process.exit(1);
 });
+
+// Smithery sandbox server for capability scanning
+export function createSandboxServer(): McpServer {
+  const server = new McpServer({
+    name: 'excalidraw-mcp-server',
+    version: '1.0.2',
+  });
+
+  const CoordZ = z.number().min(LIMITS.MIN_COORDINATE).max(LIMITS.MAX_COORDINATE).finite();
+  const DimZ = z.number().min(0).max(LIMITS.MAX_DIMENSION).finite().optional();
+  const ColorZ = z.string().max(LIMITS.MAX_COLOR_LENGTH).optional();
+  const IdZ = z.string().max(LIMITS.MAX_ID_LENGTH);
+  const IdsZ = z.array(IdZ).min(1).max(LIMITS.MAX_ELEMENT_IDS);
+  const PointZ = z.object({ x: CoordZ, y: CoordZ });
+
+  const elementFields = {
+    type: z.enum(ELEMENT_TYPES),
+    x: CoordZ, y: CoordZ,
+    width: DimZ, height: DimZ,
+    points: z.array(PointZ).max(LIMITS.MAX_POINTS).optional(),
+    backgroundColor: ColorZ, strokeColor: ColorZ,
+    strokeWidth: z.number().min(0).max(LIMITS.MAX_STROKE_WIDTH).finite().optional(),
+    roughness: z.number().min(0).max(LIMITS.MAX_ROUGHNESS).finite().optional(),
+    opacity: z.number().min(LIMITS.MIN_OPACITY).max(LIMITS.MAX_OPACITY).finite().optional(),
+    text: z.string().max(LIMITS.MAX_TEXT_LENGTH).optional(),
+    fontSize: z.number().min(1).max(LIMITS.MAX_FONT_SIZE).finite().optional(),
+    fontFamily: z.number().int().min(1).max(4).optional(),
+    groupIds: z.array(z.string().max(LIMITS.MAX_GROUP_ID_LENGTH)).max(LIMITS.MAX_GROUP_IDS).optional(),
+    locked: z.boolean().optional(),
+    angle: z.number().min(-360).max(360).finite().optional(),
+  };
+
+  const noop = async () => ({ content: [{ type: 'text' as const, text: 'sandbox' }] });
+
+  server.tool('create_element', 'Create a single Excalidraw element on the canvas', elementFields, noop);
+  server.tool('update_element', 'Update an existing Excalidraw element by ID', { id: IdZ }, noop);
+  server.tool('delete_element', 'Delete an Excalidraw element by ID', { id: IdZ }, noop);
+  server.tool('query_elements', 'Search for elements by type, locked status, or group ID', { type: z.enum(ELEMENT_TYPES).optional(), locked: z.boolean().optional(), groupId: z.string().max(64).optional() }, noop);
+  server.tool('get_resource', 'Get scene state, elements, theme, or library', { resource: z.enum(['scene', 'library', 'theme', 'elements']) }, noop);
+  server.tool('batch_create_elements', `Create multiple elements at once (max ${LIMITS.MAX_BATCH_SIZE})`, { elements: z.array(z.object(elementFields)).min(1).max(LIMITS.MAX_BATCH_SIZE) }, noop);
+  server.tool('group_elements', 'Group multiple elements together', { elementIds: z.array(IdZ).min(2).max(LIMITS.MAX_ELEMENT_IDS) }, noop);
+  server.tool('ungroup_elements', 'Remove elements from a group by group ID', { groupId: z.string().max(64) }, noop);
+  server.tool('align_elements', 'Align elements (left, center, right, top, middle, bottom)', { elementIds: z.array(IdZ).min(2).max(LIMITS.MAX_ELEMENT_IDS), alignment: z.enum(['left', 'center', 'right', 'top', 'middle', 'bottom']) }, noop);
+  server.tool('distribute_elements', 'Distribute elements evenly (horizontal or vertical)', { elementIds: z.array(IdZ).min(3).max(LIMITS.MAX_ELEMENT_IDS), direction: z.enum(['horizontal', 'vertical']) }, noop);
+  server.tool('lock_elements', 'Lock elements to prevent modification', { elementIds: IdsZ }, noop);
+  server.tool('unlock_elements', 'Unlock elements to allow modification', { elementIds: IdsZ }, noop);
+  server.tool('create_from_mermaid', 'Convert a Mermaid diagram to Excalidraw elements', { mermaidDiagram: z.string().min(1).max(LIMITS.MAX_MERMAID_LENGTH) }, noop);
+  server.tool('export_scene', 'Export the canvas as PNG or SVG', { format: z.enum(['png', 'svg']), elementIds: z.array(IdZ).max(LIMITS.MAX_ELEMENT_IDS).optional(), background: ColorZ, padding: z.number().min(0).max(500).finite().optional() }, noop);
+
+  return server;
+}
