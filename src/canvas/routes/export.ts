@@ -93,23 +93,38 @@ function generateSvg(
   background: string,
   padding: number
 ): string {
-  // Calculate bounding box
+  // Calculate bounding box (account for arrow/line points)
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   for (const el of elements) {
-    const x = el.x;
-    const y = el.y;
-    const w = el.width ?? 100;
-    const h = el.height ?? 100;
-    minX = Math.min(minX, x);
-    minY = Math.min(minY, y);
-    maxX = Math.max(maxX, x + w);
-    maxY = Math.max(maxY, y + h);
+    if (el.points && el.points.length > 0) {
+      for (const p of el.points) {
+        minX = Math.min(minX, el.x + p.x);
+        minY = Math.min(minY, el.y + p.y);
+        maxX = Math.max(maxX, el.x + p.x);
+        maxY = Math.max(maxY, el.y + p.y);
+      }
+    } else {
+      const w = el.width ?? 100;
+      const h = el.height ?? (el.type === 'text' ? (el.fontSize ?? 16) * 1.4 : 100);
+      minX = Math.min(minX, el.x);
+      minY = Math.min(minY, el.y);
+      maxX = Math.max(maxX, el.x + w);
+      maxY = Math.max(maxY, el.y + h);
+    }
   }
 
   const width = maxX - minX + padding * 2;
   const height = maxY - minY + padding * 2;
   const offsetX = -minX + padding;
   const offsetY = -minY + padding;
+
+  // Collect unique arrow stroke colors for per-color markers
+  const arrowColors = new Set<string>();
+  for (const el of elements) {
+    if (el.type === 'arrow') {
+      arrowColors.add(el.strokeColor ?? '#000000');
+    }
+  }
 
   const svgElements: string[] = [];
   for (const el of elements) {
@@ -128,12 +143,26 @@ function generateSvg(
           `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" ` +
           `stroke="${stroke}" fill="${fill}" stroke-width="${sw}" opacity="${opacity}" />`
         );
+        if (el.text) {
+          const fs = el.fontSize ?? 14;
+          svgElements.push(
+            `<text x="${x + w / 2}" y="${y + h / 2}" font-size="${fs}" fill="${stroke}" ` +
+            `text-anchor="middle" dominant-baseline="central" opacity="${opacity}">${escapeXml(el.text)}</text>`
+          );
+        }
         break;
       case 'ellipse':
         svgElements.push(
           `<ellipse cx="${x + w / 2}" cy="${y + h / 2}" rx="${w / 2}" ry="${h / 2}" ` +
           `stroke="${stroke}" fill="${fill}" stroke-width="${sw}" opacity="${opacity}" />`
         );
+        if (el.text) {
+          const fs = el.fontSize ?? 14;
+          svgElements.push(
+            `<text x="${x + w / 2}" y="${y + h / 2}" font-size="${fs}" fill="${stroke}" ` +
+            `text-anchor="middle" dominant-baseline="central" opacity="${opacity}">${escapeXml(el.text)}</text>`
+          );
+        }
         break;
       case 'diamond': {
         const cx = x + w / 2, cy = y + h / 2;
@@ -142,6 +171,13 @@ function generateSvg(
           `<polygon points="${pts}" stroke="${stroke}" fill="${fill}" ` +
           `stroke-width="${sw}" opacity="${opacity}" />`
         );
+        if (el.text) {
+          const fs = el.fontSize ?? 14;
+          svgElements.push(
+            `<text x="${cx}" y="${cy}" font-size="${fs}" fill="${stroke}" ` +
+            `text-anchor="middle" dominant-baseline="central" opacity="${opacity}">${escapeXml(el.text)}</text>`
+          );
+        }
         break;
       }
       case 'text': {
@@ -170,10 +206,10 @@ function generateSvg(
             )
             .join(' ');
         } else {
-          // Synthesize path from width/height when no explicit points
           d = `M ${x} ${y} L ${x + w} ${y + h}`;
         }
-        const marker = el.type === 'arrow' ? ' marker-end="url(#arrowhead)"' : '';
+        const markerId = el.type === 'arrow' ? colorToMarkerId(el.strokeColor ?? '#000000') : '';
+        const marker = markerId ? ` marker-end="url(#${markerId})"` : '';
         svgElements.push(
           `<path d="${d}" stroke="${stroke}" fill="none" ` +
           `stroke-width="${sw}" opacity="${opacity}"${marker} />`
@@ -183,19 +219,32 @@ function generateSvg(
     }
   }
 
+  // Build per-color arrow markers
+  const markers: string[] = [];
+  for (const color of arrowColors) {
+    const id = colorToMarkerId(color);
+    markers.push(
+      `    <marker id="${id}" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">`,
+      `      <polygon points="0 0, 10 3.5, 0 7" fill="${escapeXml(color)}" />`,
+      `    </marker>`,
+    );
+  }
+
   return [
     `<?xml version="1.0" encoding="UTF-8"?>`,
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
     `  <defs>`,
-    `    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">`,
-    `      <polygon points="0 0, 10 3.5, 0 7" fill="#1b1b1f" />`,
-    `    </marker>`,
+    ...markers,
     `    <style>text { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; }</style>`,
     `  </defs>`,
     `  <rect width="100%" height="100%" fill="${escapeXml(background)}" />`,
     `  ${svgElements.join('\n  ')}`,
     `</svg>`,
   ].join('\n');
+}
+
+function colorToMarkerId(color: string): string {
+  return 'arrow-' + color.replace(/[^a-zA-Z0-9]/g, '');
 }
 
 function escapeXml(str: string): string {

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="429" viewBox="0 0 800 429">
+  <defs>
+    <marker id="arrow-364fc7" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#364fc7" />
+    </marker>
+    <marker id="arrow-2b8a3e" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2b8a3e" />
+    </marker>
+    <marker id="arrow-7048e8" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7048e8" />
+    </marker>
+    <style>text { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; }</style>
+  </defs>
+  <rect width="100%" height="100%" fill="#ffffff" />
+  <rect x="30" y="30" width="155" height="52" rx="8" stroke="#364fc7" fill="#dbe4ff" stroke-width="2" opacity="1" />
+  <text x="107.5" y="56" font-size="13" fill="#364fc7" text-anchor="middle" dominant-baseline="central" opacity="1">Claude Desktop</text>
+  <rect x="210" y="30" width="130" height="52" rx="8" stroke="#364fc7" fill="#dbe4ff" stroke-width="2" opacity="1" />
+  <text x="275" y="56" font-size="13" fill="#364fc7" text-anchor="middle" dominant-baseline="central" opacity="1">ChatGPT</text>
+  <rect x="365" y="30" width="120" height="52" rx="8" stroke="#364fc7" fill="#dbe4ff" stroke-width="2" opacity="1" />
+  <text x="425" y="56" font-size="13" fill="#364fc7" text-anchor="middle" dominant-baseline="central" opacity="1">VS Code</text>
+  <rect x="510" y="30" width="120" height="52" rx="8" stroke="#364fc7" fill="#dbe4ff" stroke-width="2" opacity="1" />
+  <text x="570" y="56" font-size="13" fill="#364fc7" text-anchor="middle" dominant-baseline="central" opacity="1">Cursor</text>
+  <text x="248" y="105" font-size="12" fill="#868e96" opacity="1"><tspan x="248" dy="0">MCP Protocol (stdio)</tspan></text>
+  <path d="M 107 82 L 107 130" stroke="#364fc7" fill="none" stroke-width="1.5" opacity="1" marker-end="url(#arrow-364fc7)" />
+  <path d="M 275 82 L 275 130" stroke="#364fc7" fill="none" stroke-width="1.5" opacity="1" marker-end="url(#arrow-364fc7)" />
+  <path d="M 425 82 L 425 130" stroke="#364fc7" fill="none" stroke-width="1.5" opacity="1" marker-end="url(#arrow-364fc7)" />
+  <path d="M 570 82 L 570 130" stroke="#364fc7" fill="none" stroke-width="1.5" opacity="1" marker-end="url(#arrow-364fc7)" />
+  <rect x="50" y="130" width="570" height="68" rx="8" stroke="#e8590c" fill="#fff4e6" stroke-width="2.5" opacity="1" />
+  <text x="335" y="164" font-size="16" fill="#e8590c" text-anchor="middle" dominant-baseline="central" opacity="1">excalidraw-mcp-server v2.0</text>
+  <text x="75" y="186" font-size="11" fill="#c2255c" opacity="1"><tspan x="75" dy="0">16 Tools</tspan></text>
+  <text x="150" y="186" font-size="11" fill="#c2255c" opacity="1"><tspan x="150" dy="0">API Auth</tspan></text>
+  <text x="228" y="186" font-size="11" fill="#c2255c" opacity="1"><tspan x="228" dy="0">Rate Limit</tspan></text>
+  <text x="316" y="186" font-size="11" fill="#c2255c" opacity="1"><tspan x="316" dy="0">Zod Schemas</tspan></text>
+  <text x="412" y="186" font-size="11" fill="#c2255c" opacity="1"><tspan x="412" dy="0">Helmet CSP</tspan></text>
+  <text x="510" y="186" font-size="11" fill="#c2255c" opacity="1"><tspan x="510" dy="0">MCP Apps</tspan></text>
+  <path d="M 215 198 L 155 250" stroke="#2b8a3e" fill="none" stroke-width="1.5" opacity="1" marker-end="url(#arrow-2b8a3e)" />
+  <path d="M 455 198 L 515 250" stroke="#7048e8" fill="none" stroke-width="1.5" opacity="1" marker-end="url(#arrow-7048e8)" />
+  <text x="110" y="239" font-size="12" fill="#2b8a3e" opacity="1"><tspan x="110" dy="0">Standalone Mode</tspan></text>
+  <text x="485" y="239" font-size="12" fill="#7048e8" opacity="1"><tspan x="485" dy="0">Connected Mode</tspan></text>
+  <rect x="35" y="257" width="210" height="50" rx="8" stroke="#2b8a3e" fill="#d3f9d8" stroke-width="2" opacity="1" />
+  <text x="140" y="282" font-size="13" fill="#2b8a3e" text-anchor="middle" dominant-baseline="central" opacity="1">In-Process Store</text>
+  <path d="M 140 307 L 140 347" stroke="#2b8a3e" fill="none" stroke-width="1.5" opacity="1" marker-end="url(#arrow-2b8a3e)" />
+  <rect x="35" y="347" width="210" height="50" rx="8" stroke="#e8590c" fill="#fff4e6" stroke-width="2" opacity="1" />
+  <text x="140" y="372" font-size="13" fill="#e8590c" text-anchor="middle" dominant-baseline="central" opacity="1">Inline Widget (SVG)</text>
+  <text x="60" y="395" font-size="10" fill="#868e96" opacity="1"><tspan x="60" dy="0">streaming + draw-on animations</tspan></text>
+  <rect x="420" y="257" width="210" height="50" rx="8" stroke="#7048e8" fill="#e5dbff" stroke-width="2" opacity="1" />
+  <text x="525" y="282" font-size="13" fill="#7048e8" text-anchor="middle" dominant-baseline="central" opacity="1">Canvas Server</text>
+  <path d="M 525 307 L 525 347" stroke="#7048e8" fill="none" stroke-width="1.5" opacity="1" marker-end="url(#arrow-7048e8)" />
+  <text x="535" y="331" font-size="10" fill="#7048e8" opacity="1"><tspan x="535" dy="0">WebSocket</tspan></text>
+  <rect x="420" y="347" width="210" height="50" rx="8" stroke="#7048e8" fill="#e5dbff" stroke-width="2" opacity="1" />
+  <text x="525" y="372" font-size="13" fill="#7048e8" text-anchor="middle" dominant-baseline="central" opacity="1">Browser Frontend</text>
+  <text x="453" y="395" font-size="10" fill="#868e96" opacity="1"><tspan x="453" dy="0">Excalidraw + real-time sync</tspan></text>
+  <path d="M 630 282 L 680 282" stroke="#7048e8" fill="none" stroke-width="1" opacity="1" marker-end="url(#arrow-7048e8)" />
+  <rect x="680" y="265" width="90" height="35" rx="8" stroke="#7048e8" fill="#f3f0ff" stroke-width="1.5" opacity="1" />
+  <text x="725" y="282.5" font-size="11" fill="#7048e8" text-anchor="middle" dominant-baseline="central" opacity="1">File Store</text>
+</svg>

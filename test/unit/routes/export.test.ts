@@ -224,8 +224,8 @@ describe('Export route', () => {
       expect(res.status).toBe(200);
       const svg = await res.text();
       expect(svg).toContain('<path');
-      expect(svg).toContain('marker-end="url(#arrowhead)"');
-      expect(svg).toContain('<marker id="arrowhead"');
+      expect(svg).toMatch(/marker-end="url\(#arrow-[a-zA-Z0-9]+\)"/);
+      expect(svg).toMatch(/<marker id="arrow-[a-zA-Z0-9]+"/);
       // Path should use M and L commands with point coordinates
       expect(svg).toContain('M ');
       expect(svg).toContain('L ');
@@ -250,7 +250,7 @@ describe('Export route', () => {
       expect(res.status).toBe(200);
       const svg = await res.text();
       expect(svg).toContain('<path');
-      expect(svg).toContain('marker-end="url(#arrowhead)"');
+      expect(svg).toMatch(/marker-end="url\(#arrow-[a-zA-Z0-9]+\)"/);
       // Should synthesize M x y L x+w y+h path
       expect(svg).toMatch(/M \d+ \d+ L \d+ \d+/);
     });

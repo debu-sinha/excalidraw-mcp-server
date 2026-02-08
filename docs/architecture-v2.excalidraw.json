@@ -1,0 +1,619 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "excalidraw-mcp-server",
+  "elements": [
+    {
+      "id": "5cf607fd66736ed626add4596acb6845",
+      "type": "rectangle",
+      "x": 50,
+      "y": 25,
+      "width": 155,
+      "height": 52,
+      "strokeColor": "#364fc7",
+      "backgroundColor": "#dbe4ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "text": "Claude Desktop",
+      "fontSize": 13,
+      "points": null,
+      "seed": 0,
+      "version": 1
+    },
+    {
+      "id": "5d849cba68ab90c62efbf62c8abd060d",
+      "type": "rectangle",
+      "x": 230,
+      "y": 25,
+      "width": 130,
+      "height": 52,
+      "strokeColor": "#364fc7",
+      "backgroundColor": "#dbe4ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "text": "ChatGPT",
+      "fontSize": 13,
+      "points": null,
+      "seed": 1000,
+      "version": 1
+    },
+    {
+      "id": "ce40d047bb90a037f92acb829d0c0f20",
+      "type": "rectangle",
+      "x": 385,
+      "y": 25,
+      "width": 120,
+      "height": 52,
+      "strokeColor": "#364fc7",
+      "backgroundColor": "#dbe4ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "text": "VS Code",
+      "fontSize": 13,
+      "points": null,
+      "seed": 2000,
+      "version": 1
+    },
+    {
+      "id": "5b191abaff4f5994b324a532fa7b172d",
+      "type": "rectangle",
+      "x": 530,
+      "y": 25,
+      "width": 120,
+      "height": 52,
+      "strokeColor": "#364fc7",
+      "backgroundColor": "#dbe4ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "text": "Cursor",
+      "fontSize": 13,
+      "points": null,
+      "seed": 3000,
+      "version": 1
+    },
+    {
+      "id": "4d27111b7de187b79e541a40811a62fb",
+      "type": "text",
+      "x": 268,
+      "y": 88,
+      "width": null,
+      "height": null,
+      "strokeColor": "#868e96",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "text": "MCP Protocol (stdio)",
+      "fontSize": 12,
+      "points": null,
+      "seed": 4000,
+      "version": 1
+    },
+    {
+      "id": "df0a09cf88d708a598255868abd45af7",
+      "type": "arrow",
+      "x": 127,
+      "y": 77,
+      "width": null,
+      "height": null,
+      "strokeColor": "#364fc7",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1.5,
+      "text": null,
+      "fontSize": 16,
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 48
+        }
+      ],
+      "seed": 5000,
+      "version": 1
+    },
+    {
+      "id": "3472a8cb86f45fecfbe342b8f7ff2849",
+      "type": "arrow",
+      "x": 295,
+      "y": 77,
+      "width": null,
+      "height": null,
+      "strokeColor": "#364fc7",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1.5,
+      "text": null,
+      "fontSize": 16,
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 48
+        }
+      ],
+      "seed": 6000,
+      "version": 1
+    },
+    {
+      "id": "7b98ac446e6740bd32351920064a09dd",
+      "type": "arrow",
+      "x": 445,
+      "y": 77,
+      "width": null,
+      "height": null,
+      "strokeColor": "#364fc7",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1.5,
+      "text": null,
+      "fontSize": 16,
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 48
+        }
+      ],
+      "seed": 7000,
+      "version": 1
+    },
+    {
+      "id": "101d2e5fd22717eefb16565552e569cf",
+      "type": "arrow",
+      "x": 590,
+      "y": 77,
+      "width": null,
+      "height": null,
+      "strokeColor": "#364fc7",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1.5,
+      "text": null,
+      "fontSize": 16,
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 48
+        }
+      ],
+      "seed": 8000,
+      "version": 1
+    },
+    {
+      "id": "ab821b195f5a63a57940f9e0dfa80193",
+      "type": "rectangle",
+      "x": 70,
+      "y": 125,
+      "width": 570,
+      "height": 68,
+      "strokeColor": "#e8590c",
+      "backgroundColor": "#fff4e6",
+      "fillStyle": "solid",
+      "strokeWidth": 2.5,
+      "text": "excalidraw-mcp-server v2.0",
+      "fontSize": 16,
+      "points": null,
+      "seed": 9000,
+      "version": 1
+    },
+    {
+      "id": "732ca0afaeab37f064b327411b67c057",
+      "type": "text",
+      "x": 95,
+      "y": 170,
+      "width": null,
+      "height": null,
+      "strokeColor": "#c2255c",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "text": "16 Tools",
+      "fontSize": 11,
+      "points": null,
+      "seed": 10000,
+      "version": 1
+    },
+    {
+      "id": "9b7c6ba1170f6d159d6cd95260e1b679",
+      "type": "text",
+      "x": 170,
+      "y": 170,
+      "width": null,
+      "height": null,
+      "strokeColor": "#c2255c",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "text": "API Auth",
+      "fontSize": 11,
+      "points": null,
+      "seed": 11000,
+      "version": 1
+    },
+    {
+      "id": "48620779558e1f9169caf4a6a25382db",
+      "type": "text",
+      "x": 248,
+      "y": 170,
+      "width": null,
+      "height": null,
+      "strokeColor": "#c2255c",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "text": "Rate Limit",
+      "fontSize": 11,
+      "points": null,
+      "seed": 12000,
+      "version": 1
+    },
+    {
+      "id": "685e4d9c65f0bd93b2bd82d3b4d53dbe",
+      "type": "text",
+      "x": 336,
+      "y": 170,
+      "width": null,
+      "height": null,
+      "strokeColor": "#c2255c",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "text": "Zod Schemas",
+      "fontSize": 11,
+      "points": null,
+      "seed": 13000,
+      "version": 1
+    },
+    {
+      "id": "f72cab0bbd40854ff7d234e9fa81fdc1",
+      "type": "text",
+      "x": 432,
+      "y": 170,
+      "width": null,
+      "height": null,
+      "strokeColor": "#c2255c",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "text": "Helmet CSP",
+      "fontSize": 11,
+      "points": null,
+      "seed": 14000,
+      "version": 1
+    },
+    {
+      "id": "e186caceb0013df2c9e51fa386427aee",
+      "type": "text",
+      "x": 530,
+      "y": 170,
+      "width": null,
+      "height": null,
+      "strokeColor": "#c2255c",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "text": "MCP Apps",
+      "fontSize": 11,
+      "points": null,
+      "seed": 15000,
+      "version": 1
+    },
+    {
+      "id": "8a77bebc4757c9bef66a0ad02acf685f",
+      "type": "arrow",
+      "x": 235,
+      "y": 193,
+      "width": null,
+      "height": null,
+      "strokeColor": "#2b8a3e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1.5,
+      "text": null,
+      "fontSize": 16,
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": -60,
+          "y": 52
+        }
+      ],
+      "seed": 16000,
+      "version": 1
+    },
+    {
+      "id": "f906720d8494b59c2389d73134f1aed5",
+      "type": "arrow",
+      "x": 475,
+      "y": 193,
+      "width": null,
+      "height": null,
+      "strokeColor": "#7048e8",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1.5,
+      "text": null,
+      "fontSize": 16,
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 60,
+          "y": 52
+        }
+      ],
+      "seed": 17000,
+      "version": 1
+    },
+    {
+      "id": "513e1ae1c8c4582034afe157e6bb5bf0",
+      "type": "text",
+      "x": 130,
+      "y": 222,
+      "width": null,
+      "height": null,
+      "strokeColor": "#2b8a3e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "text": "Standalone Mode",
+      "fontSize": 12,
+      "points": null,
+      "seed": 18000,
+      "version": 1
+    },
+    {
+      "id": "33649ae527db57b19e30a82ddb8c803e",
+      "type": "text",
+      "x": 505,
+      "y": 222,
+      "width": null,
+      "height": null,
+      "strokeColor": "#7048e8",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "text": "Connected Mode",
+      "fontSize": 12,
+      "points": null,
+      "seed": 19000,
+      "version": 1
+    },
+    {
+      "id": "0fddc3b53321878e472acb03e642e215",
+      "type": "rectangle",
+      "x": 55,
+      "y": 252,
+      "width": 210,
+      "height": 50,
+      "strokeColor": "#2b8a3e",
+      "backgroundColor": "#d3f9d8",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "text": "In-Process Store",
+      "fontSize": 13,
+      "points": null,
+      "seed": 20000,
+      "version": 1
+    },
+    {
+      "id": "9cc03f2d9d0a562cc7d5ce8845918e92",
+      "type": "arrow",
+      "x": 160,
+      "y": 302,
+      "width": null,
+      "height": null,
+      "strokeColor": "#2b8a3e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1.5,
+      "text": null,
+      "fontSize": 16,
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 40
+        }
+      ],
+      "seed": 21000,
+      "version": 1
+    },
+    {
+      "id": "5a02be50ae88efa568de383fde910f1e",
+      "type": "rectangle",
+      "x": 55,
+      "y": 342,
+      "width": 210,
+      "height": 50,
+      "strokeColor": "#e8590c",
+      "backgroundColor": "#fff4e6",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "text": "Inline Widget (SVG)",
+      "fontSize": 13,
+      "points": null,
+      "seed": 22000,
+      "version": 1
+    },
+    {
+      "id": "a113952bbd8f75fb4981e700da3838f0",
+      "type": "text",
+      "x": 80,
+      "y": 380,
+      "width": null,
+      "height": null,
+      "strokeColor": "#868e96",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "text": "streaming + draw-on animations",
+      "fontSize": 10,
+      "points": null,
+      "seed": 23000,
+      "version": 1
+    },
+    {
+      "id": "928296d44632e70e7fda39cbf743b945",
+      "type": "rectangle",
+      "x": 440,
+      "y": 252,
+      "width": 210,
+      "height": 50,
+      "strokeColor": "#7048e8",
+      "backgroundColor": "#e5dbff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "text": "Canvas Server",
+      "fontSize": 13,
+      "points": null,
+      "seed": 24000,
+      "version": 1
+    },
+    {
+      "id": "9fec0c50fd476ac1581aa6210793f9a7",
+      "type": "arrow",
+      "x": 545,
+      "y": 302,
+      "width": null,
+      "height": null,
+      "strokeColor": "#7048e8",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1.5,
+      "text": null,
+      "fontSize": 16,
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 40
+        }
+      ],
+      "seed": 25000,
+      "version": 1
+    },
+    {
+      "id": "0fefacc2e59321aa0530d50639e6dd1e",
+      "type": "text",
+      "x": 555,
+      "y": 316,
+      "width": null,
+      "height": null,
+      "strokeColor": "#7048e8",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "text": "WebSocket",
+      "fontSize": 10,
+      "points": null,
+      "seed": 26000,
+      "version": 1
+    },
+    {
+      "id": "abe197e69652fc03725b56638946527c",
+      "type": "rectangle",
+      "x": 440,
+      "y": 342,
+      "width": 210,
+      "height": 50,
+      "strokeColor": "#7048e8",
+      "backgroundColor": "#e5dbff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "text": "Browser Frontend",
+      "fontSize": 13,
+      "points": null,
+      "seed": 27000,
+      "version": 1
+    },
+    {
+      "id": "36f6a6d60162f74ce90fd06c0f802202",
+      "type": "text",
+      "x": 473,
+      "y": 380,
+      "width": null,
+      "height": null,
+      "strokeColor": "#868e96",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "text": "Excalidraw + real-time sync",
+      "fontSize": 10,
+      "points": null,
+      "seed": 28000,
+      "version": 1
+    },
+    {
+      "id": "3891cf65f2454683fc1982447609c048",
+      "type": "arrow",
+      "x": 650,
+      "y": 277,
+      "width": null,
+      "height": null,
+      "strokeColor": "#7048e8",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "text": null,
+      "fontSize": 16,
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 50,
+          "y": 0
+        }
+      ],
+      "seed": 29000,
+      "version": 1
+    },
+    {
+      "id": "e256cf3a0b067959d3edf4b2f9c1b6bc",
+      "type": "rectangle",
+      "x": 700,
+      "y": 260,
+      "width": 90,
+      "height": 35,
+      "strokeColor": "#7048e8",
+      "backgroundColor": "#f3f0ff",
+      "fillStyle": "solid",
+      "strokeWidth": 1.5,
+      "text": "File Store",
+      "fontSize": 11,
+      "points": null,
+      "seed": 30000,
+      "version": 1
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff"
+  },
+  "files": {}
+}

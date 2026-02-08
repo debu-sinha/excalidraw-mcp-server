@@ -189,39 +189,109 @@ function buildBasicSvg(elements: ServerElement[]): string {
     return '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"></svg>';
   }
 
-  // Compute bounding box
+  // Compute bounding box (account for arrow/line points)
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   for (const el of elements) {
-    minX = Math.min(minX, el.x);
-    minY = Math.min(minY, el.y);
-    maxX = Math.max(maxX, el.x + (el.width ?? 100));
-    maxY = Math.max(maxY, el.y + (el.height ?? 50));
+    if (el.points && el.points.length > 0) {
+      for (const p of el.points) {
+        minX = Math.min(minX, el.x + p.x);
+        minY = Math.min(minY, el.y + p.y);
+        maxX = Math.max(maxX, el.x + p.x);
+        maxY = Math.max(maxY, el.y + p.y);
+      }
+    } else {
+      const ew = el.width ?? 100;
+      const eh = el.height ?? (el.type === 'text' ? (el.fontSize ?? 20) * 1.4 : 50);
+      minX = Math.min(minX, el.x);
+      minY = Math.min(minY, el.y);
+      maxX = Math.max(maxX, el.x + ew);
+      maxY = Math.max(maxY, el.y + eh);
+    }
   }
 
   const padding = 20;
   const w = maxX - minX + padding * 2;
   const h = maxY - minY + padding * 2;
 
+  // Collect unique arrow colors for per-color markers
+  const arrowColors = new Set<string>();
+  for (const el of elements) {
+    if (el.type === 'arrow') arrowColors.add(el.strokeColor ?? '#1b1b1f');
+  }
+
+  const markers: string[] = [];
+  for (const color of arrowColors) {
+    const id = 'arrow-' + color.replace(/[^a-zA-Z0-9]/g, '');
+    markers.push(`<marker id="${id}" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="${escapeXml(color)}" /></marker>`);
+  }
+
   const parts: string[] = [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="${minX - padding} ${minY - padding} ${w} ${h}">`,
   ];
 
+  if (markers.length > 0) {
+    parts.push(`<defs>${markers.join('')}<style>text { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; }</style></defs>`);
+  } else {
+    parts.push('<defs><style>text { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; }</style></defs>');
+  }
+
   for (const el of elements) {
     const stroke = el.strokeColor ?? '#1b1b1f';
     const fill = el.backgroundColor ?? 'none';
+    const sw = el.strokeWidth ?? 1;
+
     switch (el.type) {
-      case 'rectangle':
-        parts.push(`<rect x="${el.x}" y="${el.y}" width="${el.width ?? 100}" height="${el.height ?? 50}" stroke="${stroke}" fill="${fill}" stroke-width="${el.strokeWidth ?? 1}" />`);
+      case 'rectangle': {
+        const rw = el.width ?? 100;
+        const rh = el.height ?? 50;
+        parts.push(`<rect x="${el.x}" y="${el.y}" width="${rw}" height="${rh}" rx="8" stroke="${stroke}" fill="${fill}" stroke-width="${sw}" />`);
+        if (el.text) {
+          const fs = el.fontSize ?? 14;
+          parts.push(`<text x="${el.x + rw / 2}" y="${el.y + rh / 2}" font-size="${fs}" fill="${stroke}" text-anchor="middle" dominant-baseline="central">${escapeXml(el.text)}</text>`);
+        }
         break;
-      case 'ellipse':
-        parts.push(`<ellipse cx="${el.x + (el.width ?? 100) / 2}" cy="${el.y + (el.height ?? 50) / 2}" rx="${(el.width ?? 100) / 2}" ry="${(el.height ?? 50) / 2}" stroke="${stroke}" fill="${fill}" stroke-width="${el.strokeWidth ?? 1}" />`);
+      }
+      case 'ellipse': {
+        const ew = el.width ?? 100;
+        const eh = el.height ?? 50;
+        parts.push(`<ellipse cx="${el.x + ew / 2}" cy="${el.y + eh / 2}" rx="${ew / 2}" ry="${eh / 2}" stroke="${stroke}" fill="${fill}" stroke-width="${sw}" />`);
+        if (el.text) {
+          const fs = el.fontSize ?? 14;
+          parts.push(`<text x="${el.x + ew / 2}" y="${el.y + eh / 2}" font-size="${fs}" fill="${stroke}" text-anchor="middle" dominant-baseline="central">${escapeXml(el.text)}</text>`);
+        }
         break;
-      case 'text':
-        parts.push(`<text x="${el.x}" y="${el.y + (el.fontSize ?? 20)}" font-size="${el.fontSize ?? 20}" fill="${stroke}">${escapeXml(el.text ?? '')}</text>`);
+      }
+      case 'diamond': {
+        const dw = el.width ?? 100;
+        const dh = el.height ?? 100;
+        const cx = el.x + dw / 2;
+        const cy = el.y + dh / 2;
+        parts.push(`<polygon points="${cx},${el.y} ${el.x + dw},${cy} ${cx},${el.y + dh} ${el.x},${cy}" stroke="${stroke}" fill="${fill}" stroke-width="${sw}" />`);
+        if (el.text) {
+          const fs = el.fontSize ?? 14;
+          parts.push(`<text x="${cx}" y="${cy}" font-size="${fs}" fill="${stroke}" text-anchor="middle" dominant-baseline="central">${escapeXml(el.text)}</text>`);
+        }
         break;
-      default:
-        // For arrows, lines, diamonds, freedraw - skip in basic SVG
+      }
+      case 'text': {
+        const fs = el.fontSize ?? 20;
+        parts.push(`<text x="${el.x}" y="${el.y + fs}" font-size="${fs}" fill="${stroke}">${escapeXml(el.text ?? '')}</text>`);
         break;
+      }
+      case 'arrow':
+      case 'line':
+      case 'freedraw': {
+        let d: string;
+        if (el.points && el.points.length > 0) {
+          d = el.points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${el.x + p.x} ${el.y + p.y}`).join(' ');
+        } else {
+          d = `M ${el.x} ${el.y} L ${el.x + (el.width ?? 100)} ${el.y + (el.height ?? 50)}`;
+        }
+        const markerId = el.type === 'arrow' ? 'arrow-' + (el.strokeColor ?? '#1b1b1f').replace(/[^a-zA-Z0-9]/g, '') : '';
+        const marker = markerId ? ` marker-end="url(#${markerId})"` : '';
+        parts.push(`<path d="${d}" stroke="${stroke}" fill="none" stroke-width="${sw}"${marker} />`);
+        break;
+      }
     }
   }
 
