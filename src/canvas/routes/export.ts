@@ -125,7 +125,7 @@ function generateSvg(
     switch (el.type) {
       case 'rectangle':
         svgElements.push(
-          `<rect x="${x}" y="${y}" width="${w}" height="${h}" ` +
+          `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" ` +
           `stroke="${stroke}" fill="${fill}" stroke-width="${sw}" opacity="${opacity}" />`
         );
         break;
@@ -144,29 +144,42 @@ function generateSvg(
         );
         break;
       }
-      case 'text':
+      case 'text': {
+        const fs = el.fontSize ?? 16;
+        const lines = (el.text ?? '').split('\n');
+        const tspans = lines
+          .map((line, i) =>
+            `<tspan x="${x}" dy="${i === 0 ? 0 : fs * 1.2}">${escapeXml(line)}</tspan>`
+          )
+          .join('');
         svgElements.push(
-          `<text x="${x}" y="${y + (el.fontSize ?? 16)}" ` +
-          `font-size="${el.fontSize ?? 16}" fill="${stroke}" opacity="${opacity}">` +
-          `${escapeXml(el.text ?? '')}</text>`
+          `<text x="${x}" y="${y + fs}" ` +
+          `font-size="${fs}" fill="${stroke}" opacity="${opacity}">` +
+          `${tspans}</text>`
         );
         break;
+      }
       case 'line':
       case 'arrow':
-      case 'freedraw':
+      case 'freedraw': {
+        let d: string;
         if (el.points && el.points.length > 0) {
-          const d = el.points
+          d = el.points
             .map((p, i) =>
               `${i === 0 ? 'M' : 'L'} ${x + p.x} ${y + p.y}`
             )
             .join(' ');
-          const marker = el.type === 'arrow' ? ' marker-end="url(#arrowhead)"' : '';
-          svgElements.push(
-            `<path d="${d}" stroke="${stroke}" fill="none" ` +
-            `stroke-width="${sw}" opacity="${opacity}"${marker} />`
-          );
+        } else {
+          // Synthesize path from width/height when no explicit points
+          d = `M ${x} ${y} L ${x + w} ${y + h}`;
         }
+        const marker = el.type === 'arrow' ? ' marker-end="url(#arrowhead)"' : '';
+        svgElements.push(
+          `<path d="${d}" stroke="${stroke}" fill="none" ` +
+          `stroke-width="${sw}" opacity="${opacity}"${marker} />`
+        );
         break;
+      }
     }
   }
 
@@ -174,9 +187,10 @@ function generateSvg(
     `<?xml version="1.0" encoding="UTF-8"?>`,
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
     `  <defs>`,
-    `    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">`,
-    `      <polygon points="0 0, 10 3.5, 0 7" fill="#000" />`,
+    `    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">`,
+    `      <polygon points="0 0, 10 3.5, 0 7" fill="#1b1b1f" />`,
     `    </marker>`,
+    `    <style>text { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; }</style>`,
     `  </defs>`,
     `  <rect width="100%" height="100%" fill="${escapeXml(background)}" />`,
     `  ${svgElements.join('\n  ')}`,
