@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Excalidraw MCP Server - Live Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: #ffffff;
+      color: #1b1b1f;
+    }
+    .header {
+      background: #f8f9fa;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header h1 { font-size: 16px; font-weight: 600; }
+    .status {
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      margin-left: auto;
+    }
+    .status.connected { background: #d3f9d8; color: #2b8a3e; }
+    .status.disconnected { background: #ffe3e3; color: #c92a2a; }
+    .status.waiting { background: #fff3bf; color: #e67700; }
+    #counter {
+      font-size: 12px;
+      color: #868e96;
+      padding: 3px 10px;
+      background: #f1f3f5;
+      border-radius: 12px;
+    }
+    #canvas {
+      width: 100%;
+      height: calc(100vh - 50px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #canvas svg {
+      max-width: 100%;
+      max-height: 100%;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.06));
+    }
+    .empty-msg {
+      color: #adb5bd;
+      font-size: 15px;
+    }
+    @keyframes draw-in {
+      from { stroke-dashoffset: var(--path-length); opacity: 0.3; }
+      to { stroke-dashoffset: 0; opacity: 1; }
+    }
+    .draw-on { animation: draw-in 0.5s ease-out forwards; }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .fade-on { animation: fade-in 0.4s ease-out forwards; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>excalidraw-mcp-server</h1>
+    <span class="status waiting" id="status">Connecting...</span>
+    <span id="counter">0 elements</span>
+  </div>
+  <div id="canvas">
+    <p class="empty-msg" id="empty">Waiting for elements...</p>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const apiKey = params.get('key') || '';
+    const serverUrl = params.get('server') || 'ws://127.0.0.1:3000';
+
+    const statusEl = document.getElementById('status');
+    const counterEl = document.getElementById('counter');
+    const canvasEl = document.getElementById('canvas');
+    const emptyEl = document.getElementById('empty');
+
+    let elements = [];
+    let prevCount = 0;
+
+    function esc(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function render() {
+      if (elements.length === 0) {
+        canvasEl.innerHTML = '<p class="empty-msg">Waiting for elements...</p>';
+        counterEl.textContent = '0 elements';
+        return;
+      }
+
+      counterEl.textContent = elements.length + ' elements';
+
+      // Bounding box
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (const el of elements) {
+        if (el.points && el.points.length > 0) {
+          for (const p of el.points) {
+            minX = Math.min(minX, el.x + p.x);
+            minY = Math.min(minY, el.y + p.y);
+            maxX = Math.max(maxX, el.x + p.x);
+            maxY = Math.max(maxY, el.y + p.y);
+          }
+        } else {
+          minX = Math.min(minX, el.x);
+          minY = Math.min(minY, el.y);
+          maxX = Math.max(maxX, el.x + (el.width || 100));
+          maxY = Math.max(maxY, el.y + (el.height || (el.type === 'text' ? (el.fontSize || 16) * 1.4 : 50)));
+        }
+      }
+
+      const pad = 40;
+      const w = maxX - minX + pad * 2;
+      const h = maxY - minY + pad * 2;
+
+      // Collect arrow colors
+      const arrowColors = new Set();
+      elements.forEach(el => { if (el.type === 'arrow') arrowColors.add(el.strokeColor || '#1b1b1f'); });
+
+      const markers = [];
+      for (const color of arrowColors) {
+        const id = 'a-' + color.replace(/[^a-zA-Z0-9]/g, '');
+        markers.push(`<marker id="${id}" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="${color}" /></marker>`);
+      }
+
+      const parts = [
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX - pad} ${minY - pad} ${w} ${h}">`,
+        `<defs>${markers.join('')}<style>text { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; }</style></defs>`,
+      ];
+
+      for (let i = 0; i < elements.length; i++) {
+        const el = elements[i];
+        const stroke = el.strokeColor || '#1b1b1f';
+        const fill = el.backgroundColor || 'transparent';
+        const sw = el.strokeWidth || 1;
+        const isNew = i >= prevCount;
+
+        switch (el.type) {
+          case 'rectangle': {
+            const rw = el.width || 100;
+            const rh = el.height || 50;
+            const perim = 2 * (rw + rh);
+            const cls = isNew ? 'draw-on' : '';
+            const style = isNew ? `stroke-dasharray:${perim};--path-length:${perim}` : '';
+            parts.push(`<rect class="${cls}" x="${el.x}" y="${el.y}" width="${rw}" height="${rh}" rx="8" stroke="${stroke}" fill="${fill}" stroke-width="${sw}" style="${style}" />`);
+            if (el.text) {
+              parts.push(`<text class="${isNew ? 'fade-on' : ''}" x="${el.x + rw/2}" y="${el.y + rh/2}" font-size="${el.fontSize || 14}" fill="${stroke}" text-anchor="middle" dominant-baseline="central" font-weight="500">${esc(el.text)}</text>`);
+            }
+            break;
+          }
+          case 'ellipse': {
+            const ew = el.width || 100;
+            const eh = el.height || 50;
+            const cls = isNew ? 'draw-on' : '';
+            const perim = Math.PI * (3*(ew/2 + eh/2) - Math.sqrt((3*ew/2 + eh/2)*(ew/2 + 3*eh/2)));
+            const style = isNew ? `stroke-dasharray:${perim};--path-length:${perim}` : '';
+            parts.push(`<ellipse class="${cls}" cx="${el.x + ew/2}" cy="${el.y + eh/2}" rx="${ew/2}" ry="${eh/2}" stroke="${stroke}" fill="${fill}" stroke-width="${sw}" style="${style}" />`);
+            if (el.text) {
+              parts.push(`<text class="${isNew ? 'fade-on' : ''}" x="${el.x + ew/2}" y="${el.y + eh/2}" font-size="${el.fontSize || 14}" fill="${stroke}" text-anchor="middle" dominant-baseline="central">${esc(el.text)}</text>`);
+            }
+            break;
+          }
+          case 'diamond': {
+            const dw = el.width || 100;
+            const dh = el.height || 100;
+            const cx = el.x + dw/2;
+            const cy = el.y + dh/2;
+            parts.push(`<polygon class="${isNew ? 'draw-on' : ''}" points="${cx},${el.y} ${el.x+dw},${cy} ${cx},${el.y+dh} ${el.x},${cy}" stroke="${stroke}" fill="${fill}" stroke-width="${sw}" />`);
+            break;
+          }
+          case 'text': {
+            const fs = el.fontSize || 16;
+            parts.push(`<text class="${isNew ? 'fade-on' : ''}" x="${el.x}" y="${el.y + fs}" font-size="${fs}" fill="${stroke}">${esc(el.text || '')}</text>`);
+            break;
+          }
+          case 'arrow':
+          case 'line':
+          case 'freedraw': {
+            if (el.points && el.points.length >= 2) {
+              const d = el.points.map((p, j) => `${j === 0 ? 'M' : 'L'} ${el.x + p.x} ${el.y + p.y}`).join(' ');
+              let pathLen = 0;
+              for (let j = 1; j < el.points.length; j++) {
+                const dx = el.points[j].x - el.points[j-1].x;
+                const dy = el.points[j].y - el.points[j-1].y;
+                pathLen += Math.sqrt(dx*dx + dy*dy);
+              }
+              const cls = isNew ? 'draw-on' : '';
+              const style = isNew ? `stroke-dasharray:${pathLen};--path-length:${pathLen}` : '';
+              const mid = el.type === 'arrow' ? ` marker-end="url(#a-${stroke.replace(/[^a-zA-Z0-9]/g, '')})"` : '';
+              parts.push(`<path class="${cls}" d="${d}" stroke="${stroke}" fill="none" stroke-width="${sw}"${mid} style="${style}" />`);
+            }
+            break;
+          }
+        }
+      }
+
+      parts.push('</svg>');
+      canvasEl.innerHTML = parts.join('\n');
+      prevCount = elements.length;
+    }
+
+    // Connect WebSocket
+    function connect() {
+      const wsUrl = `${serverUrl.replace('http', 'ws')}/?token=${encodeURIComponent(apiKey)}`;
+      const ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        statusEl.textContent = 'Connected';
+        statusEl.className = 'status connected';
+      };
+
+      ws.onclose = () => {
+        statusEl.textContent = 'Disconnected';
+        statusEl.className = 'status disconnected';
+        setTimeout(connect, 2000);
+      };
+
+      ws.onerror = () => ws.close();
+
+      ws.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          switch (msg.type) {
+            case 'initial_elements':
+              if (msg.elements) {
+                elements = msg.elements;
+                prevCount = 0;
+                render();
+              }
+              break;
+            case 'element_created':
+              if (msg.element) {
+                elements = elements.filter(e => e.id !== msg.element.id);
+                elements.push(msg.element);
+                render();
+              }
+              break;
+            case 'element_updated':
+              if (msg.element) {
+                elements = elements.map(e => e.id === msg.element.id ? msg.element : e);
+                render();
+              }
+              break;
+            case 'element_deleted':
+              if (msg.elementId) {
+                elements = elements.filter(e => e.id !== msg.elementId);
+                render();
+              }
+              break;
+            case 'elements_batch_created':
+              if (msg.elements) {
+                const ids = new Set(msg.elements.map(e => e.id));
+                elements = elements.filter(e => !ids.has(e.id));
+                elements.push(...msg.elements);
+                render();
+              }
+              break;
+          }
+        } catch (err) {
+          console.error('Parse error:', err);
+        }
+      };
+    }
+
+    if (apiKey) {
+      connect();
+    } else {
+      statusEl.textContent = 'No API key';
+      statusEl.className = 'status disconnected';
+      canvasEl.innerHTML = '<p class="empty-msg">Add ?key=YOUR_API_KEY to the URL</p>';
+    }
+  </script>
+</body>
+</html>

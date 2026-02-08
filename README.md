@@ -8,6 +8,10 @@ The only Excalidraw MCP server with security hardening, inline diagram rendering
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org/)
 
+<p align="center">
+  <img src="docs/demo.gif" alt="Demo: architecture diagram being drawn element-by-element in real-time through WebSocket sync" width="720" />
+</p>
+
 ## What it does
 
 Ask your AI to draw a diagram, and it appears right inside the chat. The MCP server gives Claude Desktop, ChatGPT, VS Code, and Cursor a full set of drawing tools backed by the Excalidraw format -- with API authentication, rate limiting, and input validation on every operation.
