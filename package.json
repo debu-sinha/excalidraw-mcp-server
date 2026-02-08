@@ -1,7 +1,7 @@
 {
   "name": "excalidraw-mcp-server",
   "mcpName": "io.github.debu-sinha/excalidraw",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Security-hardened MCP server for Excalidraw with API key auth, rate limiting, and real-time canvas sync",
   "main": "dist/mcp/index.js",
   "type": "module",
